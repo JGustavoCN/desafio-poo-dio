@@ -22,6 +22,30 @@ public class Curso extends Conteudo{
     }
 
     @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 61 * hash + this.cargaHoraria;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Curso other = (Curso) obj;
+        return this.cargaHoraria == other.cargaHoraria;
+    }
+
+    
+    
+    @Override
     public String toString() {
         return "Curso{" +
                 "titulo='" + getTitulo() + '\'' +

@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.Set;
 
 public class Bootcamp {
+
     private String nome;
     private String descricao;
     private final LocalDate dataInicial = LocalDate.now();
@@ -14,6 +15,21 @@ public class Bootcamp {
     private Set<Dev> devsInscritos = new HashSet<>();
     private Set<Conteudo> conteudos = new LinkedHashSet<>();
 
+    public boolean concluirBootcamp(Dev dev) {
+        if (!devsInscritos.contains(dev)) {
+            throw new IllegalArgumentException("O dev não está inscrito");
+        }
+        if (!dev.getConteudosConcluidos().containsAll(conteudos)) {
+            System.err.println(dev.getNome() + " não concluiu ainda o bootcamp");
+            System.err.println("Falta concluir esses: ");
+            conteudos.stream().filter(item -> !dev.getConteudosConcluidos().contains(item)).forEach(System.err::println);
+            return false;
+        }
+        dev.getBootcampConcluidos().add(this);
+        dev.getBootcampInscritos().remove(this);
+        System.out.println(dev.getNome() + " concluiu o bootcamp");
+        return true;
+    }
 
     public String getNome() {
         return nome;
@@ -56,15 +72,39 @@ public class Bootcamp {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Bootcamp bootcamp = (Bootcamp) o;
-        return Objects.equals(nome, bootcamp.nome) && Objects.equals(descricao, bootcamp.descricao) && Objects.equals(dataInicial, bootcamp.dataInicial) && Objects.equals(dataFinal, bootcamp.dataFinal) && Objects.equals(devsInscritos, bootcamp.devsInscritos) && Objects.equals(conteudos, bootcamp.conteudos);
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Bootcamp other = (Bootcamp) obj;
+        if (!Objects.equals(this.nome, other.nome)) {
+            return false;
+        }
+        if (!Objects.equals(this.descricao, other.descricao)) {
+            return false;
+        }
+        if (!Objects.equals(this.dataInicial, other.dataInicial)) {
+            return false;
+        }
+        return Objects.equals(this.dataFinal, other.dataFinal);
     }
+
+   
 
     @Override
     public int hashCode() {
-        return Objects.hash(nome, descricao, dataInicial, dataFinal, devsInscritos, conteudos);
+        int hash = 7;
+        hash = 29 * hash + Objects.hashCode(this.nome);
+        hash = 29 * hash + Objects.hashCode(this.descricao);
+        hash = 29 * hash + Objects.hashCode(this.dataInicial);
+        hash = 29 * hash + Objects.hashCode(this.dataFinal);
+        return hash;
     }
+
 }
